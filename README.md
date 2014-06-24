@@ -8,7 +8,7 @@ An adaptation of the [NVD3.js](http://nv3d.org/) charting library's [Simple Line
 
 Run this example by calling:
 
-`shiny::runGitHub("shiny-js-examples", "jcheng5", subdir="output")`
+`shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output")`
 
 ## Input example
 
@@ -16,4 +16,4 @@ Demonstrates creating a custom Shiny input binding for a simple JavaScript-enabl
 
 Run this example by calling:
 
-`shiny::runGitHub("shiny-js-examples", "jcheng5", subdir="input")`
+`shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="input")`
