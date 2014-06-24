@@ -15,10 +15,43 @@ binding.find = function(scope) {
   return $(scope).find(".nvd3-linechart");
 };
 
-binding.renderValue = function(el, data) {
+binding.renderValue = function(el, input) {
   // This function will be called every time we receive new output
   // values for a line chart from Shiny. The "el" argument is the
   // div for this particular chart.
+  console.debug(input);
+  
+  if(input == null){
+    return;
+  }
+  
+  // We need to store these variables before rendering the chart, so 
+  // that we can access them again when they are updated by reactive
+  // elements
+  
+  // Generate x Axis label
+  if (typeof input.xlab != 'undefined' || input.xlab != null) {
+    var xlabel = input.xlab;
+  }else{
+    var xlabel = " ";
+  }
+  
+  // store xDomain if applicable
+  if (typeof input.xlim != 'undefined' || input.xlim != null) {
+    var xDomain = input.xlim;
+  }
+  
+  // Generate y Axis label
+  if (typeof input.ylab != 'undefined') {
+    var ylabel = input.ylab;
+  }else{
+    var ylabel = " ";
+  }
+  
+  // Apply yDomain if applicable
+  if (typeof input.ylim != 'undefined') {
+    var yDomain = input.ylim;
+  }
   
   var $el = $(el);
     
@@ -37,12 +70,23 @@ binding.renderValue = function(el, data) {
     chart.xAxis     //Chart x-axis settings
       .axisLabel('Time (ms)')
       .tickFormat(d3.format(',r'));
+      
+    // Apply xDomain if applicable
+    if (typeof xDomain != 'undefined') {
+      chart.xDomain(xDomain);
+    }
  
     chart.yAxis     //Chart y-axis settings
       .axisLabel('Voltage (v)')
       .tickFormat(d3.format('.02f'));
 
-    nv.utils.windowResize(chart.update);
+    // Apply yDomain if applicable
+    if (typeof yDomain != 'undefined') {
+      chart.yDomain(yDomain);
+    }
+
+    // Moved this down to the nv.addGraph function
+    //nv.utils.windowResize(chart.update);
     
     var selection = d3.select(el).select("svg");
     
@@ -61,10 +105,16 @@ binding.renderValue = function(el, data) {
   // Schedule some work with nvd3
   nv.addGraph(function() {
     // Update the chart
+    state.chart
+      .yDomain(yDomain)
+      .xDomain(xDomain);
     state.selection
-      .datum(data)
+      .datum(input.data)
       .transition(500)
       .call(state.chart);
+    
+    nv.utils.windowResize(state.chart.update); // chart was not updating on windowResize until I put this here
+    
     return state.chart;
   });
 };

@@ -20,7 +20,12 @@ shinyUI(fluidPage(
       sliderInput("sinePhase", "Sine phase", -180, 180, 0, step=10,
         animate=animationOptions(interval=100, loop=TRUE)),
       sliderInput("sineAmplitude", "Sine amplitude", -2, 2, 1, step=0.1,
-        animate=animationOptions(interval=100, loop=TRUE))
+        animate=animationOptions(interval=100, loop=TRUE)),
+      sliderInput("xlimits", "X-Axis Limits", 1, 100, c(20, 80)),
+      sliderInput("ylimits", "Y-Axis Limits", -5, 5, c(-1, 1)),
+      selectInput("colors", "Line Colors", 
+                  choices=list("Default NVD3 Colors"=1, "Theme 800"=2, "Ice Road"=3, "Infinity8"=4),
+                  selected = 1)
     )
   )
 ))
