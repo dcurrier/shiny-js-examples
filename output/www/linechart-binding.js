@@ -107,7 +107,10 @@ binding.renderValue = function(el, input) {
     // Update the chart
     state.chart
       .yDomain(yDomain)
-      .xDomain(xDomain);
+      .yAxis.axisLabel(ylabel);
+    state.chart
+      .xDomain(xDomain)
+      .xAxis.axisLabel(xlabel);
     state.selection
       .datum(input.data)
       .transition(500)
