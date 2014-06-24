@@ -25,7 +25,9 @@ shinyUI(fluidPage(
       sliderInput("ylimits", "Y-Axis Limits", -5, 5, c(-1, 1)),
       selectInput("colors", "Line Colors", 
                   choices=list("Default NVD3 Colors"=1, "Theme 800"=2, "Ice Road"=3, "Infinity8"=4),
-                  selected = 1)
+                  selected = 1),
+      textInput("xlabel", label="X-Axis Label", value="Time (ms)"),
+      textInput("ylabel", label="Y-Axis Label", value="Voltage (v)")
     )
   )
 ))

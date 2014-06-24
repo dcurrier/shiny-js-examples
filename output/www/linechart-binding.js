@@ -68,7 +68,7 @@ binding.renderValue = function(el, input) {
       .showXAxis(true);
       
     chart.xAxis     //Chart x-axis settings
-      .axisLabel('Time (ms)')
+      .axisLabel(xlabel)
       .tickFormat(d3.format(',r'));
       
     // Apply xDomain if applicable
@@ -77,7 +77,7 @@ binding.renderValue = function(el, input) {
     }
  
     chart.yAxis     //Chart y-axis settings
-      .axisLabel('Voltage (v)')
+      .axisLabel(ylabel)
       .tickFormat(d3.format('.02f'));
 
     // Apply yDomain if applicable

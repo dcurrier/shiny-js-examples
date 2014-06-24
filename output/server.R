@@ -19,6 +19,13 @@ shinyServer(function(input, output, session) {
       "Sine 2" = sin(1:100/10) * 0.25 + 0.5
     )
     
-    return(list(data=df, ylim=input$ylimits, xlim=c(20,80), cols=colors(), xlim=input$xlimits))
+    return(list( data=df, 
+                 ylim=input$ylimits, 
+                 xlim=c(20,80), 
+                 cols=colors(), 
+                 xlim=input$xlimits, 
+                 ylab=input$ylabel, 
+                 xlab=input$xlabel
+                 ))
   })
 })
