@@ -10,6 +10,15 @@ shinyServer(function(input, output, session) {
            c("#7DA1BE", "#393E42", "#F08544"))
   })
   
+  points = reactive({
+    type = function(selection){
+      selection = as.integer(selection)
+      switch(selection,
+             "l", "p", "b", "n")
+    }
+    mapply(type, c(input$s1, input$s2, input$s3))
+  })
+  
   # Render line chart
   output$mychart <- renderLineChart({
     # Return a data frame. Each column will be a series in the line chart.
@@ -18,14 +27,15 @@ shinyServer(function(input, output, session) {
       Cosine = 0.5 * cos(1:100/10),
       "Sine 2" = sin(1:100/10) * 0.25 + 0.5
     )
-    
+
     return(list( data=df, 
                  ylim=input$ylimits, 
                  xlim=c(20,80), 
                  cols=colors(), 
                  xlim=input$xlimits, 
                  ylab=input$ylabel, 
-                 xlab=input$xlabel
+                 xlab=input$xlabel,
+                 type=points()
                  ))
   })
 })

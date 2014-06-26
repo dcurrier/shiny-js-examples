@@ -9,7 +9,7 @@ shinyUI(fluidPage(
         "JavaScript charting library."
       ),
       p("Source code:",
-        a(href="https://github.com/jcheng5/shiny-js-examples/tree/master/output", "@jcheng5/shiny-js-examples/output"))
+        a(href="https://github.com/dcurrier/shiny-js-examples/tree/master/output", "@dcurrier/shiny-js-examples/output"))
     )
   ),
   fluidRow(
@@ -27,7 +27,16 @@ shinyUI(fluidPage(
                   choices=list("Default NVD3 Colors"=1, "Theme 800"=2, "Ice Road"=3, "Infinity8"=4),
                   selected = 1),
       textInput("xlabel", label="X-Axis Label", value="Time (ms)"),
-      textInput("ylabel", label="Y-Axis Label", value="Voltage (v)")
+      textInput("ylabel", label="Y-Axis Label", value="Voltage (v)"),
+      selectInput("s1", "Series 1 Plot Type", 
+                  choices=list("Line"=1, "Points"=2, "Both"=3, "None"=4),
+                  selected = 2),
+      selectInput("s2", "Series 2 Plot Type", 
+                  choices=list("Line"=1, "Points"=2, "Both"=3, "None"=4),
+                  selected = 1),
+      selectInput("s3", "Series 3 Plot Type", 
+                  choices=list("Line"=1, "Points"=2, "Both"=3, "None"=4),
+                  selected = 3)
     )
   )
 ))

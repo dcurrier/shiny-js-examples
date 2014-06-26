@@ -41,8 +41,14 @@ renderLineChart <- function(expr, env=parent.frame(), quoted=FALSE) {
       return()
     }else{
       # Convert colors to hex
-      if(!(exists('cols')) || is.null(cols) || length(cols) != dim(dataframe)[2] ) {
-        cols = rep("", dim(dataframe)[2])
+      if( !(exists('cols')) || is.null(cols) || length(cols) != dim(dataframe)[2] ) {
+        if(!(exists('cols')) || is.null(cols)){
+          # If colors were not supplied, construct a vector of null values
+          cols = rep("", dim(dataframe)[2])
+        }else{
+          # If the color vector supplied is not the correct length, make one that is by recycling/truncating as necessary
+          cols = rep(cols, ceiling(dim(dataframe)[2]/length(cols)))[1:dim(dataframe)[2]]
+        }
       } else {
         cols = unlist(mapply(function(c){
           c = unlist(c)
@@ -61,6 +67,24 @@ renderLineChart <- function(expr, env=parent.frame(), quoted=FALSE) {
           }
         }, cols))
       }
+      
+      # Setup default plot style
+      if( !(exists('type')) || is.null(type) || length(type) != dim(dataframe)[2] ) {
+        if( !(exists('type')) || is.null(type) ) {
+          # If the types were not supplied construct a vector of "l"s
+          type = rep("l", dim(dataframe)[2])
+        }else{
+          # If the type vector supplied is not the correct length, make one that is by filling missing types with "l" or truncating
+          if(length(type) > dim(dataframe)[2] ){
+            type = type[1:dim(dataframe)[2]]
+          }
+          if(length(type) < dim(dataframe)[2] ) {
+            type = c(type, rep("l", dim(dataframe)[2]-length(type)))
+          }
+        }
+      }
+      # remove any names attribute
+      type = unname(type)
       
       # truncate data if xlim is narrower than data
       if(any(c('x', 'X') %in% colnames(dataframe))){
@@ -82,15 +106,19 @@ renderLineChart <- function(expr, env=parent.frame(), quoted=FALSE) {
       
       # Return the data and plot settings as a list
       c(list(
-        data = mapply(function(col, name, color) {
+        data = mapply(function(col, name, color, type) {
 
-          values <- mapply(function(val, i) {
-            list(x = i, y = val)
-          }, col, xVals, SIMPLIFY=FALSE, USE.NAMES=FALSE)
-    
-          list(key = name, values = values, color=color)
+          values <- mapply(function(val, i, t) {
+            if(t == "p"){
+              list(x = i, y = val, shape="square")
+            }else{
+              list(x = i, y = val)
+            }
+          }, col, xVals, type, SIMPLIFY=FALSE, USE.NAMES=FALSE)
           
-        }, dataframe, names(dataframe), cols, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
+            list(key = name, values = values, color=color)
+          
+        }, dataframe, names(dataframe), cols, type, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
         mapply(function(setting){
           get(setting)
         },names(result)[which(names(result) != "data")])
