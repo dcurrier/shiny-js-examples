@@ -1,5 +1,8 @@
 shinyServer(function(input, output, session) {
   
+  ############################################
+  # LineChart
+  
   # Return colors from color scheme chosen
   colors = reactive({
     choice = as.integer(input$colors)
@@ -20,7 +23,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Render line chart
-  output$mychart <- renderLineChart({
+  output$myLineChart <- renderLineChart({
     # Return a data frame. Each column will be a series in the line chart.
     df = data.frame(
       Sine = sin(1:100/10 + input$sinePhase * pi/180) * input$sineAmplitude,
@@ -39,4 +42,37 @@ shinyServer(function(input, output, session) {
                  type=points()
                  ))
   })
+  
+  # End LineChart
+  ############################################
+  
+  
+  ############################################
+  # Scatter Chart
+  
+  # Render line chart
+  output$myScatterChart <- renderScatterChart({
+    # Return a data frame. Each column will be a series in the line chart.
+    df = data.frame(
+      Sine = sin(1:100/10 + input$sinePhase * pi/180) * input$sineAmplitude,
+      Cosine = 0.5 * cos(1:100/10),
+      "Sine 2" = sin(1:100/10) * 0.25 + 0.5
+    )
+    
+    return(list( data=df, 
+                 ylim=input$ylimits, 
+                 xlim=c(20,80), 
+                 cols=colors(), 
+                 xlim=input$xlimits, 
+                 ylab=input$ylabel, 
+                 xlab=input$xlabel,
+                 main=input$main,
+                 type=points()
+    ))
+  })
+  
+  
+  
+  
+  
 })

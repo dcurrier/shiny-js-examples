@@ -23,7 +23,7 @@ shinyUI(fluidPage(
                       div(h4("Interactive Sine Curves",
                              style ="text-align: center")),
                       br(),
-                      lineChartOutput("mychart", height=500)                    
+                      lineChartOutput("myLineChart", height=500)                    
                ),
                column(width=3,
                       h4("Curve Shapes:"),
@@ -70,6 +70,39 @@ shinyUI(fluidPage(
                )
              )),
     tabPanel("Scatter Chart",
-             fluidRow())
+             fluidRow(
+               column(width=12,
+                      p("This Shiny app is an adaptation of the",
+                        a(href="http://nvd3.org/examples/scatter.html", "Scatter Chart"),
+                        "example for the",
+                        a(href="http://nvd3.org/", "NVD3.js"),
+                        "JavaScript charting library."
+                      )
+               )),             
+             fluidRow(
+               column(width=9,
+                      br(),
+                      div(h4("Interactive Sine Curves",
+                             style ="text-align: center")),
+                      br(),
+                      lineChartOutput("myScatterChart", height=500)                    
+               ),
+               column(width=3,
+                      h4("Curve Shapes:"),
+                      sliderInput("sinePhase", "Sine phase", -180, 180, 0, step=10,
+                                  animate=animationOptions(interval=100, loop=TRUE)),
+                      sliderInput("sineAmplitude", "Sine amplitude", -2, 2, 1, step=0.1,
+                                  animate=animationOptions(interval=100, loop=TRUE)),
+                      hr(),
+                      h4("X Axis Parameters"),
+                      sliderInput("xlimits", "X-Axis Limits", 1, 100, c(20, 80)),
+                      textInput("xlabel", label="X-Axis Label", value="Time (ms)"),
+                      hr(),
+                      h4("Y Axis Parameters"),
+                      textInput("ylabel", label="Y-Axis Label", value="Voltage (v)"),
+                      sliderInput("ylimits", "Y-Axis Limits", -5, 5, c(-1, 1))
+                      
+               )
+             ))
   )
 ))
