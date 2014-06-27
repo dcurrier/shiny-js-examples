@@ -30,6 +30,14 @@ binding.renderValue = function(el, input) {
   // that we can access them again when they are updated by reactive
   // elements
   
+  // Create Margin object -- NOTE: Top margin will always be reset to the legend height!
+  if(typeof input.mar != 'undefined' && input.mar.length == 4){
+    var mar = {top: input.mar[0], right: input.mar[1], bottom: input.mar[2], left: input.mar[3]};
+  }else{
+    var mar = {top: 30, right: 20, bottom: 50, left: 100};
+  }
+  
+  
   // Generate x Axis label
   if (typeof input.xlab != 'undefined' || input.xlab != null) {
     var xlabel = input.xlab;
@@ -54,6 +62,13 @@ binding.renderValue = function(el, input) {
     var yDomain = input.ylim;
   }
   
+  // Apply title is applicable  -- Titles will not be supported until the top margin bug is fixed
+  /*if(typeof input.main != 'undefined') {
+    var title = input.main;
+    //mar.top = 100;  // The top margin is reset to the legend height - it's a bug that won't be fixed until v2.0.0
+  }*/
+  
+  console.debug(mar);
   var $el = $(el);
     
   // The first time we render a value for a particular element, we
@@ -61,7 +76,7 @@ binding.renderValue = function(el, input) {
   // store these on $el as a data value called "state".
   if (!$el.data("state")) {
     var chart = nv.models.lineChart()
-      .margin({left: 100})
+      .margin( mar )
       .useInteractiveGuideline(true)
       .transitionDuration(350)
       .showLegend(true)
@@ -121,6 +136,16 @@ binding.renderValue = function(el, input) {
       .datum(input.data)
       .transition(500)
       .call(state.chart);
+      
+    // Set Title
+    if(typeof title != 'undefined'){
+      state.selection.append('text')
+            .attr('x', state.chart.width()/2)
+            .attr('y', 0-(state.chart.margin().top/2))
+            .attr('text-anchor', 'middle')
+            .attr('class', 'chart-title')
+            .text(title);
+    }
     
     // Setup a function to adjust the CSS of lines to be points
     var mkpoints = function(types){
