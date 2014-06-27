@@ -35,6 +35,7 @@ shinyServer(function(input, output, session) {
                  xlim=input$xlimits, 
                  ylab=input$ylabel, 
                  xlab=input$xlabel,
+                 main=input$main,
                  type=points()
                  ))
   })
