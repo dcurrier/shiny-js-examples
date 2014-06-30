@@ -79,13 +79,19 @@ binding.renderValue = function(el, input) {
     }
   }
   
+  if(typeof input.onlyCircles != 'undefined') {
+    var onlyCircles = input.onlyCircles;
+  }else{
+    var onlyCircles = false;
+  }
+  
   // Apply title is applicable  -- Titles will not be supported until the top margin bug is fixed
   /*if(typeof input.main != 'undefined') {
     var title = input.main;
     //mar.top = 100;  // The top margin is reset to the legend height - it's a bug that won't be fixed until v2.0.0
   }*/
   
-  
+  console.debug(yDist);
   var $el = $(el);
     
   // The first time we render a value for a particular element, we
@@ -118,6 +124,9 @@ binding.renderValue = function(el, input) {
     if (typeof yDomain != 'undefined') {
       chart.yDomain(yDomain);
     }
+    
+    //Show shapes other than circles if set
+    chart.scatter.onlyCircles(onlyCircles);
 
     // Moved this down to the nv.addGraph function
     //nv.utils.windowResize(chart.update);
@@ -150,6 +159,7 @@ binding.renderValue = function(el, input) {
       .xDomain(xDomain)
       .showDistX(xDist) // Currently does not work - does not update
       .xAxis.axisLabel(xlabel);
+    state.chart.scatter.onlyCircles(onlyCircles);  //Show shapes other than circles if set
     state.selection
       .datum(input.data)
       .transition(500)

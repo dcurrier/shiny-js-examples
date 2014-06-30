@@ -145,21 +145,39 @@ renderScatterChart <- function(expr, env=parent.frame(), quoted=FALSE) {
         }
       }
       
+      if( !(exists('shape')) || is.null(shape) || length(shape) != dim(y)[2]) {
+        if(!(exists('shape')) || is.null(shape)){
+          # If colors were not supplied, construct a vector of null values
+          shape = rep("", dim(y)[2])
+        }else{
+          # If the color vector supplied is not the correct length, make one that is by recycling/truncating as necessary
+          shape = rep(shape, ceiling(dim(y)[2]/length(shape)))[1:dim(y)[2]]
+          if(any(shape != 'cirlce')){
+            onlyCircles = FALSE
+          }
+        }
+      }else{
+        allowed = c('circle', 'cross', 'triangle-up', 'triangle-down', 'diamond', 'square')
+        shape[which(!(shape %in% allowed))] = allowed[1]
+        if(any(shape != 'cirlce')){
+          onlyCircles = FALSE
+        }
+      }
       
      
       
       
       # Return the data and plot settings as a list
       c(list(
-        data = mapply(function(col, name, color, size) {
+        data = mapply(function(col, name, color, size, shape) {
           
-          values <- mapply(function(val, i, s) {
-              list(x = i, y = val, size = s)
-          }, col, x[,which(names(x)==name)], size, SIMPLIFY=FALSE, USE.NAMES=FALSE)
+          values <- mapply(function(val, i, s, sh) {
+              list(x = i, y = val, size = s, shape = sh)
+          }, col, x[,which(names(x)==name)], size, shape, SIMPLIFY=FALSE, USE.NAMES=FALSE)
           
           list(key = name, values = values, color=color)
           
-        }, y, names(y), cols, size, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
+        }, y, names(y), cols, size, shape, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
         mapply(function(setting){
           get(setting)
         },names(result)[which(names(result) != "data")])

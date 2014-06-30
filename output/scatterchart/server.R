@@ -41,13 +41,14 @@ shinyServer(function(input, output, session) {
     
     return(list( y=y, 
                  x=x,
-                 yDist=yDist(),
-                 xDist=xDist(),
+                 yDist=yDist(), # This value does not work as a reactive variable.  The initial value is set correctly, but the plot will not reacti to changes.
+                 xDist=xDist(), # This value does not work as a reactive variable.  The initial value is set correctly, but the plot will not reacti to changes.
                  names=c("Alpha", "Beta", "Gamma"), 
                  size=c(input$g1sz, input$g2sz, input$g3sz), 
                  ylim=c(100, 1000),
                  xlim=c(100, 1000),
-                 cols=colors() ))
+                 cols=colors(),
+                 shape=c(input$g1sh, input$g2sh, input$g3sh) ))
   })
   
   
