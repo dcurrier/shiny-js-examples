@@ -31,24 +31,90 @@ renderScatterChart <- function(expr, env=parent.frame(), quoted=FALSE) {
   
   function() {
     result <- func()
-    dataframe = result$data
+    y = result$y
     
     # Assign settings to variables
     for(i in 1:length(result)){
       assign(names(result)[i], result[[i]])
     }
     
-    if(is.null(dataframe)){
+    if(is.null(y)){
       return()
     }else{
+      # Return null if x exists, is not null, and is not the correct dimension
+      if( exists('x') && !(is.null(x)) ){
+        if(is.data.frame(y)){
+          if(  (is.data.frame(x) && dim(x)[1] != dim(y)[1] && dim(x)[2] != dim(y)[2]) ){
+            return()
+          }
+        }else if(is.vector(y)){
+          if( (is.vector(x) && length(x) != dim(y)[1]) ){
+            return()
+          }
+        }else{
+          return()
+        }
+      }
+      
+      formatXCoordinates = function(x, y){
+        if(is.data.frame(x) && dim(y)[2] == dim(x)[2] && all(names(x) != names(y))){
+          colnames(x) = names(y)
+        }else if(is.data.frame(x) && dim(y)[2] > dim(x)[2]){ # if x is smaller, repeat x until it is the same size as y
+          while(dim(x)[2] < dim(y)[2]){
+            x = cbind(x, x)
+          }
+          if(dim(x)[2] > dim(y)[2]){ # if x overflows y truncate to make it the same size
+            x = x[, 1:dim(y)[2]]
+            colnames(x) = names(y)
+          }
+        }else if(is.data.frame(x) && dim(y)[2] < dim(x)[2]){ # if x is a data.frame and it is bigger than y, truncate
+          x = x[, 1:dim(y)[2]]
+          colnames(x) = names(y)
+        }else if(is.vector(x) && length(x) == dim(y)[1]){ # if x is a vector, make it a data.frame with repeating columns of x
+          t = as.data.frame(matrix(nrow = dim(y)[1], ncol = 0))
+          while(dim(t)[2] < dim(y)[2]){
+            t = cbind(t, x)
+          }
+          x = t
+          colnames(x) = names(y)
+        }
+        return(x)
+      }
+      
+      # Ensure that column names are the same in both X and Y
+      if(is.data.frame(y)){
+        # If names have been specified, but the colnames of y are not named the same, make them the same
+        if(exists('names') && length(names) == dim(y)[2] && all(names(y) != names)){
+          colnames(y) = names
+        }
+        
+        # If x is a data.frame and it is the same size as y and the names do not match, force them to match
+        if(!(exists('x'))){
+          x=1:nrow(y)
+        }
+        
+        # Adjust X coordinates to match Y coordinates
+        x = formatXCoordinates(x, y)  
+      }else if(is.vector(y)){
+        # Convert to Data.Frame
+        y = as.data.frame(y)
+        
+        if(!(exists('x'))){
+          x=1:nrow(y)
+        }
+        
+        # Adjust X Coords
+        x = formatXCoordinates(x, y)
+      }
+      
       # Convert colors to hex
-      if( !(exists('cols')) || is.null(cols) || length(cols) != dim(dataframe)[2] ) {
+      if( !(exists('cols')) || is.null(cols) || length(cols) != dim(y)[2] ) {
         if(!(exists('cols')) || is.null(cols)){
           # If colors were not supplied, construct a vector of null values
-          cols = rep("", dim(dataframe)[2])
+          cols = rep("", dim(y)[2])
         }else{
           # If the color vector supplied is not the correct length, make one that is by recycling/truncating as necessary
-          cols = rep(cols, ceiling(dim(dataframe)[2]/length(cols)))[1:dim(dataframe)[2]]
+          cols = rep(cols, ceiling(dim(y)[2]/length(cols)))[1:dim(y)[2]]
         }
       } else {
         cols = unlist(mapply(function(c){
@@ -69,57 +135,31 @@ renderScatterChart <- function(expr, env=parent.frame(), quoted=FALSE) {
         }, cols))
       }
       
-      # Setup default plot style
-      if( !(exists('type')) || is.null(type) || length(type) != dim(dataframe)[2] ) {
-        if( !(exists('type')) || is.null(type) ) {
-          # If the types were not supplied construct a vector of "l"s
-          type = rep("l", dim(dataframe)[2])
+      if( !(exists('size')) || is.null(size) || length(size) != dim(y)[2]) {
+        if(!(exists('size')) || is.null(size)){
+          # If colors were not supplied, construct a vector of null values
+          size = rep("", dim(y)[2])
         }else{
-          # If the type vector supplied is not the correct length, make one that is by filling missing types with "l" or truncating
-          if(length(type) > dim(dataframe)[2] ){
-            type = type[1:dim(dataframe)[2]]
-          }
-          if(length(type) < dim(dataframe)[2] ) {
-            type = c(type, rep("l", dim(dataframe)[2]-length(type)))
-          }
+          # If the color vector supplied is not the correct length, make one that is by recycling/truncating as necessary
+          size = rep(size, ceiling(dim(y)[2]/length(size)))[1:dim(y)[2]]
         }
       }
-      # remove any names attribute
-      type = unname(type)
       
-      # truncate data if xlim is narrower than data
-      if(any(c('x', 'X') %in% colnames(dataframe))){
-        xVals = data[,which(colnames(dataframe) %in% c('x', 'X'))]
-      }else{
-        xVals = 1:nrow(dataframe)
-      }
       
-      if(exists('xlim')){
-        if(xlim[1] > min(xVals)){lower = min(which(xVals >= xlim[1]))}else{lower = which(xVals == min(xVals))}
-        if(xlim[2] < max(xVals)){upper = max(which(xVals <= xlim[2]))}else{upper = which(xVals == max(xVals))}
-        dataframe = dataframe[lower:upper, ]
-        if(nrow(dataframe) < length(xVals)){
-          #rm(xlim)
-          result$xlim = NULL
-        }
-        xVals = xVals[lower:upper]
-      }
+     
+      
       
       # Return the data and plot settings as a list
       c(list(
-        data = mapply(function(col, name, color, type) {
+        data = mapply(function(col, name, color, size) {
           
-          values <- mapply(function(val, i, t) {
-            if(t == "p"){
-              list(x = i, y = val, shape="square")
-            }else{
-              list(x = i, y = val)
-            }
-          }, col, xVals, type, SIMPLIFY=FALSE, USE.NAMES=FALSE)
+          values <- mapply(function(val, i, s) {
+              list(x = i, y = val, size = s)
+          }, col, x[,which(names(x)==name)], size, SIMPLIFY=FALSE, USE.NAMES=FALSE)
           
           list(key = name, values = values, color=color)
           
-        }, dataframe, names(dataframe), cols, type, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
+        }, y, names(y), cols, size, SIMPLIFY=FALSE, USE.NAMES=FALSE)),
         mapply(function(setting){
           get(setting)
         },names(result)[which(names(result) != "data")])

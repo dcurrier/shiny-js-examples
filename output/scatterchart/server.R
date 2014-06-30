@@ -1,7 +1,9 @@
 shinyServer(function(input, output, session) {
   
+  
+  
   ############################################
-  # LineChart
+  # Scatter Chart
   
   # Return colors from color scheme chosen
   colors = reactive({
@@ -13,62 +15,39 @@ shinyServer(function(input, output, session) {
            c("#7DA1BE", "#393E42", "#F08544"))
   })
   
-  points = reactive({
-    type = function(selection){
-      selection = as.integer(selection)
-      switch(selection,
-             "l", "p", "b", "n")
-    }
-    mapply(type, c(input$s1, input$s2, input$s3))
+  yDist = reactive({
+    as.integer(input$yDist)
   })
   
-  # Render line chart
-  output$myLineChart <- renderLineChart({
-    # Return a data frame. Each column will be a series in the line chart.
-    df = data.frame(
-      Sine = sin(1:100/10 + input$sinePhase * pi/180) * input$sineAmplitude,
-      Cosine = 0.5 * cos(1:100/10),
-      "Sine 2" = sin(1:100/10) * 0.25 + 0.5
-    )
-
-    return(list( data=df, 
-                 ylim=input$ylimits, 
-                 xlim=c(20,80), 
-                 cols=colors(), 
-                 xlim=input$xlimits, 
-                 ylab=input$ylabel, 
-                 xlab=input$xlabel,
-                 main=input$main,
-                 type=points()
-                 ))
+  xDist = reactive({
+    as.integer(input$xDist)
   })
-  
-  # End LineChart
-  ############################################
-  
-  
-  ############################################
-  # Scatter Chart
   
   # Render line chart
   output$myScatterChart <- renderScatterChart({
     # Return a data frame. Each column will be a series in the line chart.
-    df = data.frame(
-      Sine = sin(1:100/10 + input$sinePhase * pi/180) * input$sineAmplitude,
-      Cosine = 0.5 * cos(1:100/10),
-      "Sine 2" = sin(1:100/10) * 0.25 + 0.5
+    y = list(
+      Group1 = runif(input$n, min=input$g1Yr[1], max=input$g1Yr[2]),
+      Group2 = runif(input$n, min=input$g2Yr[1], max=input$g2Yr[2]),
+      Group3 = runif(input$n, min=input$g3Yr[1], max=input$g3Yr[2])
     )
     
-    return(list( data=df, 
-                 ylim=input$ylimits, 
-                 xlim=c(20,80), 
-                 cols=colors(), 
-                 xlim=input$xlimits, 
-                 ylab=input$ylabel, 
-                 xlab=input$xlabel,
-                 main=input$main,
-                 type=points()
-    ))
+    x = data.frame(
+      G1 = runif(input$n, min=input$g1Xr[1], max=input$g1Xr[2]),
+      G2 = runif(input$n, min=input$g2Xr[1], max=input$g2Xr[2]),
+      G3 = runif(input$n, min=input$g3Xr[1], max=input$g3Xr[2])
+    )
+    
+    
+    return(list( y=y, 
+                 x=x,
+                 yDist=yDist(),
+                 xDist=xDist(),
+                 names=c("Alpha", "Beta", "Gamma"), 
+                 size=c(input$g1sz, input$g2sz, input$g3sz), 
+                 ylim=c(100, 1000),
+                 xlim=c(100, 1000),
+                 cols=colors() ))
   })
   
   

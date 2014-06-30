@@ -62,13 +62,30 @@ binding.renderValue = function(el, input) {
     var yDomain = input.ylim;
   }
   
+  // Apply Axis Distributions
+  if (typeof input.yDist != 'undefined') {
+    if(input.yDist == 1){
+      var yDist = true;
+    }else{
+      var yDist = false;
+    }
+  }
+  
+  if (typeof input.xDist != 'undefined') {
+    if(input.xDist == 1){
+      var xDist = true;
+    }else{
+      var xDist = false;
+    }
+  }
+  
   // Apply title is applicable  -- Titles will not be supported until the top margin bug is fixed
   /*if(typeof input.main != 'undefined') {
     var title = input.main;
     //mar.top = 100;  // The top margin is reset to the legend height - it's a bug that won't be fixed until v2.0.0
   }*/
   
-  console.debug(mar);
+  
   var $el = $(el);
     
   // The first time we render a value for a particular element, we
@@ -79,8 +96,8 @@ binding.renderValue = function(el, input) {
       .margin( mar )
       .transitionDuration(350)
       .showLegend(true)
-      .showDistY(true)
-      .showDistX(true);
+      .showDistY(yDist)    // This will set the value, but you can't change it later
+      .showDistX(xDist);   // This will set the value, but you can't change it later
       
       chart.dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState', 'renderEnd');
       
@@ -127,9 +144,11 @@ binding.renderValue = function(el, input) {
     // Update the chart
     state.chart
       .yDomain(yDomain)
+      .showDistY(yDist)  // Currently does not work - does not update
       .yAxis.axisLabel(ylabel);
     state.chart
       .xDomain(xDomain)
+      .showDistX(xDist) // Currently does not work - does not update
       .xAxis.axisLabel(xlabel);
     state.selection
       .datum(input.data)
