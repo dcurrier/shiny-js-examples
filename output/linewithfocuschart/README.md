@@ -9,7 +9,7 @@ Line Chart Output:
 
 Or, if you do not have R or the Shiny package installed, the following links will bring you to examples hosted by [shinyapps.io](http://www.shinyapps.io).
 
-[Line With Focus Chart Output](http://dcurrier.shinyapps.io/shiny-js-linewithfocuschart)
+[Line With Focus Chart Output](http://dcurrier.shinyapps.io/linewithfocuschart)
 
 
 ## Implementation
