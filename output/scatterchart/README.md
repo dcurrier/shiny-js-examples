@@ -18,7 +18,7 @@ Or, if you do not have R or the Shiny package installed, the following links wil
 
 `scatterchart.R` contains reusable R functions `scatterChartOutput` and `renderScatterChart` that can be called from a Shiny app's `ui.R` and `server.R` (respectively) to add line charts.
 
-The file `www/scatterchart-binding.js` contains the JavaScript code that defines a custom Shiny output binding for the line charts. It's loaded into the app implicitly by the `lineChartOutput` function.
+The file `www/scatterchart-binding.js` contains the JavaScript code that defines a custom Shiny output binding for the line charts. It's loaded into the app implicitly by the `scatterChartOutput` function.
 
 The `www/d3` and `www/nvd3` directories contain the 3rd party libraries [D3](http://d3js.org/) and [NVD3](http://nvd3.org/). They also are loaded from `scatterChartOutput`.
 
