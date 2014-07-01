@@ -14,7 +14,7 @@ multiBarChartOutput <- function(inputId, width="100%", height="400px") {
       tags$script(src="d3/d3.v3.min.js"),
       tags$script(src="nvd3/nv.d3.min.js"),
       tags$link(rel="stylesheet", type="text/css", href="nvd3/nv.d3.min.css"),
-      tags$script(src="multiBarchart-binding.js")
+      tags$script(src="multibarchart-binding.js")
     )),
     div(id=inputId, class="nvd3-multiBarchart", style=style,
       tag("svg", list())
