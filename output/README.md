@@ -1,16 +1,19 @@
 # Output example
 
-Adaptation of [NVD3.js](http://nv3d.org/) charting library's examples. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building outputs for additional chart types.  Currently supported are [Line Chart](http://nvd3.org/ghpages/line.html), [Scatter Chart](http://nvd3.org/ghpages/scatter.html), and [Multi-Bar Chart](http://nvd3.org/ghpages/multibar.html).
+Adaptation of [NVD3.js](http://nv3d.org/) charting library's examples. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building outputs for additional chart types.  Currently supported are [Line Chart](http://nvd3.org/examples/line.html), [Scatter Chart](http://nvd3.org/examples/scatter.html), and [Multi-Bar Chart](http://nvd3.org/examples/multibar.html).
 
 Run these examples by calling:
 
 Line Chart Output:
+
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/linechart", launch.browser=TRUE)`
 
 Multi Bar Chart Output:
+
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/multibarchart", launch.browser=TRUE)`
 
 Scatter Chart Output:
+
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/scatterchart", launch.browser=TRUE)`
 
 

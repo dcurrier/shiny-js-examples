@@ -1,8 +1,8 @@
 # Output example
 
-An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Multi-Bar Chart](http://nvd3.org/ghpages/multibar.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for multibar charts. 
+An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Multi-Bar Chart](http://nvd3.org/examples/multibar.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for multibar charts. 
 
-Run this examples by calling:
+Run this example by calling:
 
 Multi Bar Chart Output:
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/multibarchart", launch.browser=TRUE)`

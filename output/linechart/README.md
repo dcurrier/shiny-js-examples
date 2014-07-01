@@ -1,8 +1,8 @@
 # Output example
 
-An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Line Chart](http://nvd3.org/ghpages/line.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements.
+An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Line Chart](http://nvd3.org/examples/line.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements.
 
-Run this examples by calling:
+Run this example by calling:
 
 Line Chart Output:
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/linechart", launch.browser=TRUE)`

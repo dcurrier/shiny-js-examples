@@ -1,8 +1,8 @@
 # Output example
 
-An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Scatter Chart](http://nvd3.org/ghpages/scatter.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for additional scatter charts.  
+An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Scatter Chart](http://nvd3.org/examples/scatter.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for additional scatter charts.  
 
-Run these examples by calling:
+Run this example by calling:
 
 Scatter Chart Output:
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/scatterchart", launch.browser=TRUE)`
