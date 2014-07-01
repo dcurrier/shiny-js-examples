@@ -68,7 +68,7 @@ binding.renderValue = function(el, input) {
     //mar.top = 100;  // The top margin is reset to the legend height - it's a bug that won't be fixed until v2.0.0
   }*/
   
-  console.debug(mar);
+
   var $el = $(el);
     
   // The first time we render a value for a particular element, we
@@ -121,7 +121,18 @@ binding.renderValue = function(el, input) {
   // Retrieve the chart and selection we created earlier
   var state = $el.data("state");
   
-  
+  // Set the disabled state of each series
+  if( !(state.chart.state().disabled) ){
+    for(i=0; i<input.data.length; i++){
+      if(!(input.data[i].disabled)){
+        input.data[i].disabled = false;
+      }
+    }
+  }else{
+    for(i=0; i<input.data.length; i++){
+      input.data[i].disabled = state.chart.state().disabled[i];
+    }
+  }
   
   // Schedule some work with nvd3
   nv.addGraph(function() {
@@ -187,8 +198,7 @@ binding.renderValue = function(el, input) {
      
     
     
-    // chart was not updating on windowResize until I put this here
-    // mkpoints needs to be called on updates to reset the css properties
+    // Update the plot when the window is resized
     nv.utils.windowResize(function(){
                             state.chart.update();
                             mkpoints(input.type);                 

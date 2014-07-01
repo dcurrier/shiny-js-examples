@@ -12,7 +12,7 @@ var binding = new Shiny.OutputBinding();
 binding.find = function(scope) {
   // For the given scope, return the set of elements that belong to
   // this binding.
-  return $(scope).find(".nvd3-scatterchart");
+  return $(scope).find(".nvd3-multiBarchart");
 };
 
 binding.renderValue = function(el, input) {
@@ -62,27 +62,11 @@ binding.renderValue = function(el, input) {
     var yDomain = input.ylim;
   }
   
-  // Apply Axis Distributions
-  if (typeof input.yDist != 'undefined') {
-    if(input.yDist == 1){
-      var yDist = true;
-    }else{
-      var yDist = false;
-    }
-  }
-  
-  if (typeof input.xDist != 'undefined') {
-    if(input.xDist == 1){
-      var xDist = true;
-    }else{
-      var xDist = false;
-    }
-  }
-  
-  if(typeof input.onlyCircles != 'undefined') {
-    var onlyCircles = input.onlyCircles;
-  }else{
-    var onlyCircles = false;
+  // Parse axis formats
+  if(typeof input.yTickFormat != 'undefined') {
+    var yTickFormat = input.yTickFormat;
+  } else {
+    var yTickFormat = '.02f';
   }
   
   // Apply title is applicable  -- Titles will not be supported until the top margin bug is fixed
@@ -91,25 +75,26 @@ binding.renderValue = function(el, input) {
     //mar.top = 100;  // The top margin is reset to the legend height - it's a bug that won't be fixed until v2.0.0
   }*/
   
-  console.debug(yDist);
   var $el = $(el);
     
   // The first time we render a value for a particular element, we
   // need to initialize the nvd3 line chart and d3 selection. We'll
   // store these on $el as a data value called "state".
   if (!$el.data("state")) {
-    var chart = nv.models.scatterChart()
+    var chart = nv.models.multiBarChart()
       .margin( mar )
+      .staggerLabels(false)
+      .reduceXTicks(false)
       .transitionDuration(350)
       .showLegend(true)
-      .showDistY(yDist)    // This will set the value, but you can't change it later
-      .showDistX(xDist);   // This will set the value, but you can't change it later
+      .showYAxis(true)
+      .showXAxis(true);
       
       chart.dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState', 'renderEnd');
       
     chart.xAxis     //Chart x-axis settings
       .axisLabel(xlabel)
-      .tickFormat(d3.format(',r'));
+      .tickFormat(d3.format('d'));
       
     // Apply xDomain if applicable
     if (typeof xDomain != 'undefined') {
@@ -118,15 +103,12 @@ binding.renderValue = function(el, input) {
  
     chart.yAxis     //Chart y-axis settings
       .axisLabel(ylabel)
-      .tickFormat(d3.format('.02f'));
+      .tickFormat(d3.format(yTickFormat));
 
     // Apply yDomain if applicable
     if (typeof yDomain != 'undefined') {
       chart.yDomain(yDomain);
     }
-    
-    //Show shapes other than circles if set
-    chart.scatter.onlyCircles(onlyCircles);
 
     // Moved this down to the nv.addGraph function
     //nv.utils.windowResize(chart.update);
@@ -146,52 +128,62 @@ binding.renderValue = function(el, input) {
   // Retrieve the chart and selection we created earlier
   var state = $el.data("state");
   
-  // Set the disabled state of each series
+   // Set the disabled state of each series
   if( !(state.chart.state().disabled) ){
+    // Generate the disabled state for each series the first time through
     for(i=0; i<input.data.length; i++){
+      // Check for the disabled state of the data
       if(!(input.data[i].disabled)){
         input.data[i].disabled = false;
       }
     }
   }else{
+    // Copy the disabled state from the plot if it exists
     for(i=0; i<input.data.length; i++){
       input.data[i].disabled = state.chart.state().disabled[i];
     }
   }
+  
   
   // Schedule some work with nvd3
   nv.addGraph(function() {
     // Update the chart
     state.chart
       .yDomain(yDomain)
-      .showDistY(yDist)  // Currently does not work - does not update
       .yAxis.axisLabel(ylabel);
     state.chart
       .xDomain(xDomain)
-      .showDistX(xDist) // Currently does not work - does not update
       .xAxis.axisLabel(xlabel);
-    state.chart.scatter.onlyCircles(onlyCircles);  //Show shapes other than circles if set
     state.selection
       .datum(input.data)
       .transition(500)
       .call(state.chart);
+      
+    // Set Title
+    if(typeof title != 'undefined'){
+      state.selection.append('text')
+            .attr('x', state.chart.width()/2)
+            .attr('y', 0-(state.chart.margin().top/2))
+            .attr('text-anchor', 'middle')
+            .attr('class', 'chart-title')
+            .text(title);
+    }
     
-    
-    // chart was not updating on windowResize until I put this here
-    // mkpoints needs to be called on updates to reset the css properties
+
+    // Update the plot when the window is resized
     nv.utils.windowResize(function(){
-                            state.chart.update();               
+                            state.chart.update();              
       });
-    
     
     return state.chart;
   });
-
+  
+  
 };
 
 
 
 // Tell Shiny about our new output binding
-Shiny.outputBindings.register(binding, "shinyjsexamples.nvd3-scatterchart");
+Shiny.outputBindings.register(binding, "shinyjsexamples.nvd3-multiBarchart");
 
 })();
