@@ -39,7 +39,7 @@ shinyUI(fluidPage(
            h4("Range Labels"),
            textInput("min", label="Range Minimum", value="Minimum"),
            textInput("int", label="Range Intermediate", value="Mean"),
-           textInput("max", label="Range Maximum", value="Minimum")
+           textInput("max", label="Range Maximum", value="Maximum")
     ),
     column(width=3,
            h4("Measure"),
@@ -49,7 +49,8 @@ shinyUI(fluidPage(
            h4("Color"),
            selectInput("colors", label="Measure Color", 
                        choices = list("Default"=1, "Purple"=2, "Red"=3,
-                                      "Green"=4, "Orange"=5, "Black"=6))
+                                      "Green"=4, "Orange"=5, "Black"=6),
+                       selected=1)
     ),
     column(width=3,
            h4("Marker"),

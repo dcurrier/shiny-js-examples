@@ -1,6 +1,6 @@
 # Output example
 
-An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Bullet Chart](http://nvd3.org/examples/bullet.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for additional scatter charts.  
+An adaptation of [NVD3.js](http://nv3d.org/) charting library's [Bullet Chart](http://nvd3.org/examples/bullet.html) example. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building an output for bullet charts.  
 
 Run this example by calling:
 
