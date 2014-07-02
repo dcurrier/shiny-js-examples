@@ -1,0 +1,7 @@
+Title: NVD3 discrete bar chart output
+Author: Joe Cheng <joe@rstudio.com>, Duane Currier <duane.currier@stjude.org>
+AuthorUrl: http://www.rstudio.com/
+License: MIT
+Type: Shiny
+Tags: custom-output nvd3 d3 javascript
+
