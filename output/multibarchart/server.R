@@ -35,7 +35,8 @@ shinyServer(function(input, output, session) {
                  xlab=input$xlabel,
                  xlim=input$xlimits,
                  yTickFormat = ".0f",
-                 cols=cols()
+                 cols=cols(),
+                 showControls = TRUE
                  ))
   })
   

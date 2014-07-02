@@ -37,6 +37,13 @@ binding.renderValue = function(el, input) {
     var mar = {top: 30, right: 20, bottom: 50, left: 100};
   }
   
+  // Store stacked/grouped flag
+  if (typeof input.showControls != 'undefined') {
+    var showControls = input.showControls;
+  }else{
+    var showControls = true;
+  }
+  
   
   // Generate x Axis label
   if (typeof input.xlab != 'undefined' || input.xlab != null) {
@@ -83,6 +90,7 @@ binding.renderValue = function(el, input) {
   if (!$el.data("state")) {
     var chart = nv.models.multiBarChart()
       .margin( mar )
+      .showControls(showControls)
       .staggerLabels(false)
       .reduceXTicks(false)
       .transitionDuration(350)
