@@ -2,6 +2,8 @@
 
 Adaptation of [NVD3.js](http://nv3d.org/) charting library's examples. Extends [This Example](http://github.com/jcheng5/shiny-js-examples) by adding customizable chart elements and building outputs for additional chart types.  Currently supported are [Line Chart](http://nvd3.org/examples/line.html), [Line With Focus Chart](http://nvd3.org/examples/lineWithFocus.html), [Scatter Chart](http://nvd3.org/examples/scatter.html), [Discrete Bar Chart](http://nvd3.org/examples/discreteBar.html), [Multi-Bar Chart](http://nvd3.org/examples/multibar.html), and [Bullet Chart](http://nvd3.org/examples/bullet.html).
 
+
+
 Run these examples by calling:
 
 Line Chart:
@@ -21,6 +23,9 @@ Scatter Chart:
 
 Bullet Chart:
 `shiny::runGitHub("shiny-js-examples", "dcurrier", subdir="output/bulletchart", launch.browser=TRUE)`
+
+
+
 
 
 Or, if you do not have R or the Shiny package installed, the following links will bring you to examples hosted by [shinyapps.io](http://www.shinyapps.io).
