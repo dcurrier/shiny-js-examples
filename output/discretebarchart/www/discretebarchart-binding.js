@@ -37,17 +37,11 @@ binding.renderValue = function(el, input) {
     var mar = {top: 30, right: 20, bottom: 50, left: 100};
   }
   
-  
   // Generate x Axis label
   if (typeof input.xlab != 'undefined' || input.xlab != null) {
     var xlabel = input.xlab;
   }else{
     var xlabel = " ";
-  }
-  
-  // store xDomain if applicable
-  if (typeof input.xlim != 'undefined' || input.xlim != null) {
-    var xDomain = input.xlim;
   }
   
   // Generate y Axis label
@@ -75,37 +69,25 @@ binding.renderValue = function(el, input) {
   // store these on $el as a data value called "state".
   if (!$el.data("state")) {
     var chart =nv.models.discreteBarChart()
+      .margin(mar)
       .x(function(d) { return d.label })
       .y(function(d) { return d.value })
       .staggerLabels(false)
       .tooltips(false)
       .showValues(true);
     
-      
-      //chart.dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'stateChange', 'changeState', 'renderEnd');
-    
-    /*
     chart.xAxis     //Chart x-axis settings
-      .axisLabel(xlabel)
-      .tickFormat(d3.format(',r'));
-      
-    // Apply xDomain if applicable
-    if (typeof xDomain != 'undefined') {
-      chart.xDomain(xDomain);
-    }
+      .axisLabel(xlabel); 
  
     chart.yAxis     //Chart y-axis settings
       .axisLabel(ylabel)
-      .tickFormat(d3.format('.02f'));
+      .tickFormat(d3.format('f'));  // See https://github.com/mbostock/d3/wiki/Formatting for formatting codes
 
     // Apply yDomain if applicable
     if (typeof yDomain != 'undefined') {
       chart.yDomain(yDomain);
     }
-
-    // Moved this down to the nv.addGraph function
-    //nv.utils.windowResize(chart.update);
-    */
+    
     
     var selection = d3.select(el).select("svg");
     
@@ -123,21 +105,14 @@ binding.renderValue = function(el, input) {
   var state = $el.data("state");
   
   
-  
-  
-  
   // Schedule some work with nvd3
   nv.addGraph(function() {
     // Update the chart
-    /*
     state.chart
-      .yDomain(yDomain)
+      .yDomain(yDomain) // Sets Axis domain, but negative bars are not rendered correctly.
       .yAxis.axisLabel(ylabel);
     state.chart
-      .xDomain(xDomain)
       .xAxis.axisLabel(xlabel);
-    */
-    console.debug(input.data);
     state.selection
       .datum(input.data)
       .transition(500)
@@ -147,10 +122,10 @@ binding.renderValue = function(el, input) {
     // chart was not updating on windowResize until I put this here
     // mkpoints needs to be called on updates to reset the css properties
     nv.utils.windowResize(function(){
-                            state.chart().update();                
+                            state.chart.update();                
       });
     
-    return state.chart();
+    return state.chart;
   });
   
   

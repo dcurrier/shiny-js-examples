@@ -41,23 +41,73 @@ renderDiscreteBarChart <- function(expr, env=parent.frame(), quoted=FALSE) {
     if(is.null(dataframe)){
       return()
     }else{
+      # Validate structure of dataframe
+      if( !('label' %in% colnames(dataframe)) || !('value' %in% colnames(dataframe)) ){
+        if( !('label' %in% colnames(dataframe)) && 'value' %in% colnames(dataframe) && dim(dataframe)[2] == 2 ){
+          colnames(dataframe)[which(colnames(dataframe) != 'value')] = 'label'
+        }else if( 'label' %in% colnames(dataframe) && !('value' %in% colnames(dataframe)) && dim(dataframe)[2] == 2 ) {
+          colnames(dataframe)[which(colnames(dataframe) != 'label')] = 'value'
+        }else if( !('label' %in% colnames(dataframe)) && !('value' %in% colnames(dataframe)) && dim(dataframe)[2] == 2 ) {
+          colnames(dataframe) = c('label', 'value')
+        }else{
+          return()
+        }
+      }
+      
       # Generate default name variable if one does not already exist
       if( !(exists('name')) || is.null(name) ){
         name = ""
       }
       
+      # Generate color vector if not supplied
+      if( !(exists('cols')) || is.null(cols) ){
+        cols = rep("", length(dataframe$value))
+      }else{
+        # If too many colors were supplied, truncate
+        if( length(cols) > length(dataframe$value) ){
+          cols = cols[1:length(dataframe$value)]
+        }
+        # If too few colors were supplied, repeat as necessary
+        if( length(cols) < length(dataframe$value) ){
+          cols = rep(cols, ceiling(length(dataframe$value)/length(cols)))[1:length(dataframe$value)]
+        }
+        # Convert supplied colors to Hex format
+        cols = unlist(mapply(function(c){
+          c = unlist(c)
+          if(is.numeric(c) && length(c) == 3){
+            r = c[1]
+            g = c[2]
+            b = c[3]
+            if(max(c) <= 1){ m = 1 }else{ m = 255 }
+            rgb(r,g,b,max=m)
+          }else if(is.character(c) && c == ""){ 
+            return("") 
+          }else if(strsplit(c, "")[1] != "#" && is.character(c) && c %in% colors() ){
+            rgb(t(col2rgb(c)), max=255)
+          }else{
+            if(nchar(c)>7){
+              return(strtrim(c, 7))
+            }else{
+              return(c)
+            }
+          }
+        }, cols))
+      }
+      
       
       # Return the data and plot settings as a list
-      values <- mapply(function(l, v) {
-        list(label = l, value = v)
-      }, dataframe$label,  dataframe$value, SIMPLIFY=FALSE, USE.NAMES=FALSE)
+      values <- mapply(function(l, v, c) {
+        list(label = l, value = v, color=c)
+      }, dataframe$label,  dataframe$value, cols, SIMPLIFY=FALSE, USE.NAMES=FALSE)
       
-      list(
-        data = list(key = name, values = values),
+      c(list(
+        data = list( list(key = name, values = values) )),
         mapply(function(setting){
           get(setting)
         },names(result)[which(names(result) != "data")])
       )
+      
+
     }
   }
 }

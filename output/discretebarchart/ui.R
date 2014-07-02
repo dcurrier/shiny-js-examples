@@ -30,16 +30,17 @@ shinyUI(fluidPage(
            sliderInput("c", "C", -20, 180, 175, step=0.01),
            sliderInput("d", "D", -20, 180, 60, step=0.01),
            sliderInput("e", "E", -20, 180, 90, step=0.01),
-           sliderInput("f", "F", -20, 180, -10, step=0.01),
-           sliderInput("g", "G", -20, 180, 125, step=0.01),
            hr(),
            h4("X Axis Parameters"),
-           sliderInput("xlimits", "X-Axis Limits", 1, 100, c(20, 80)),
-           textInput("xlabel", label="X-Axis Label", value="Time (ms)"),
+           textInput("xlabel", label="X-Axis Label", value="Catagory"),
            hr(),
            h4("Y Axis Parameters"),
-           textInput("ylabel", label="Y-Axis Label", value="Voltage (v)"),
-           sliderInput("ylimits", "Y-Axis Limits", -5, 5, c(-1, 1))
+           textInput("ylabel", label="Y-Axis Label", value="Response"),
+           hr(),
+           h4("Color Scheme"),
+           selectInput("colors", label="Colors", 
+                       choices=list("Default"=1, "Blue Mountain"=2, "Ice Road"=3, "Theme 800"=4, "Colibri"=5),
+                       selected=1)
            
     )
   )
